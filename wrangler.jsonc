@@ -6,22 +6,21 @@
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
-	// Public hostname. CF auto-provisions DNS + SSL for this on deploy as long
-	// as marsroversupply.com is on the same CF account. Worker is reachable
-	// here only — workers.dev is disabled because Anthropic's outbound POST
-	// allowlist blocks workers.dev domains anyway.
-	"workers_dev": false,
-	"routes": [
-		{
-			"pattern": "emdash.marsroversupply.com",
-			"custom_domain": true
-		}
-	],
+	// Deploy on jahid's account via *.workers.dev first. Re-enable the
+	// emdash.solspace.net custom domain once solspace.net is on this CF account
+	// (or after Mitchell adds the zone / invites you with DNS rights).
+	"workers_dev": true,
+	// "routes": [
+	// 	{
+	// 		"pattern": "emdash.solspace.net",
+	// 		"custom_domain": true
+	// 	}
+	// ],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "freeform-demo",
-			"database_id": "65cc710d-13bc-4e6a-bec8-5d03257b7fcf",
+			"database_id": "d4b9ca4b-b6c3-4166-9e3c-d84a129b63a0",
 		},
 	],
 	"r2_buckets": [
@@ -30,12 +29,17 @@
 			"bucket_name": "freeform-demo-media",
 		},
 	],
-	// Worker Loader for plugin sandboxing
-	"worker_loaders": [
+	// Astro Cloudflare sessions — reuse namespace from first deploy
+	// (retry auto-provision fails: title already exists).
+	"kv_namespaces": [
 		{
-			"binding": "LOADER",
+			"binding": "SESSION",
+			"id": "f26b7d589afb4631a0951c3d207519df",
 		},
 	],
+	// Worker Loader (LOADER) requires Cloudflare Workers Paid / Dynamic Workers.
+	// Omit on free plans — trusted plugins (freeformPlugin()) still run; registry
+	// sandbox installs stay disabled until the account is upgraded.
 	// Self-binding so the MCP handler can invoke plugin routes in-process.
 	// Cloudflare blocks workers from making HTTP fetches to their own hostname;
 	// env.SELF.fetch() dispatches directly to the worker handler instead.

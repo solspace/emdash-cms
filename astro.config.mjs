@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
-import { d1, r2 } from "@emdash-cms/cloudflare";
+import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
 import { freeformPlugin } from "@local/freeform";
@@ -32,9 +32,14 @@ export default defineConfig({
     emdash({
       database: d1({ binding: "DB", session: "auto" }),
       storage: r2({ binding: "MEDIA" }),
-      sandboxRunner: "@emdash-cms/cloudflare/sandbox",
+      // Enables LOADER sandbox only when wrangler.jsonc has worker_loaders
+      // (Workers Paid). Free plans get a build warning and trusted plugins only.
+      sandboxRunner: sandbox(),
       registry: "https://registry.emdashcms.com",
-      // Trusted plugin for local dev; use Plugins → Registry to test sandbox install.
+      // Skip Astro Font API / Google Fonts download at build time — local proxy
+      // often 502s fonts.gstatic.com. Admin falls back to system fonts.
+      fonts: false,
+      // Trusted plugin — works without Dynamic Workers / LOADER.
       plugins: [freeformPlugin()],
     }),
     freeformAstro(),

@@ -23,7 +23,7 @@
     "forms"
   ],
   "emdash": {
-    "label": "Mars Rover Supply (Freeform demo)",
+    "label": "Freeform Demo (EmDash)",
     "seed": "seed/seed.json"
   },
   "scripts": {

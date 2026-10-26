@@ -9,7 +9,6 @@ import {
 import { createPublicPageContext } from "emdash/page";
 import { FreeformDiscovery } from "@solspace/freeform-astro/components";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
-import logoSvg from "../../public/logo.svg?raw";
 
 interface Props {
 	title: string;
@@ -40,8 +39,7 @@ const pageCtx = createPublicPageContext({
 	siteName: siteTitle,
 });
 
-const today = new Date();
-const revStamp = `${today.getUTCFullYear()}.${String(today.getUTCMonth() + 1).padStart(2, "0")}.${String(today.getUTCDate()).padStart(2, "0")}`;
+const year = new Date().getUTCFullYear();
 ---
 
 <!doctype html>
@@ -52,34 +50,18 @@ const revStamp = `${today.getUTCFullYear()}.${String(today.getUTCMonth() + 1).pa
 		<title>{fullTitle}</title>
 		{pageDescription && <meta name="description" content={pageDescription} />}
 		{canonical && <link rel="canonical" href={canonical} />}
-		<link rel="icon" type="image/svg+xml" href="/rover.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Michroma&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap"
-			rel="stylesheet"
-		/>
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="theme-color" content="#0f172a" />
 		<EmDashHead page={pageCtx} />
 		<FreeformDiscovery />
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
-		<div class="grain" aria-hidden="true"></div>
-
-		<div class="spec-strip" aria-hidden="true">
-			<span>MRS-9100</span>
-			<span class="sep">/</span>
-			<span>CLASSIFICATION: PUBLIC</span>
-			<span class="sep">/</span>
-			<span>REV. {revStamp}</span>
-			<span class="sep">/</span>
-			<span>THARSIS YARD · EL SEGUNDO · CA</span>
-		</div>
-
 		<header class="site-header">
 			<a href="/" class="brand" aria-label={siteTitle}>
-				<Fragment set:html={logoSvg} />
+				<img src="/favicon.svg" width="36" height="36" alt="" />
+				<span>Solspace Freeform</span>
 			</a>
 			<nav class="primary-nav" aria-label="Primary">
 				{menu?.items.map((item) => (
@@ -95,34 +77,26 @@ const revStamp = `${today.getUTCFullYear()}.${String(today.getUTCMonth() + 1).pa
 		</main>
 
 		<footer class="site-footer">
-			<div class="footer-grid">
-				<div class="footer-block">
-					<div class="footer-label">Contact</div>
-					<a href="/contact">Start a program</a>
-					<a href="mailto:press@marsroversupply.com">press@marsroversupply.com</a>
-					<a href="mailto:gov@marsroversupply.com">gov@marsroversupply.com</a>
+			<div class="footer-row">
+				<div>
+					<strong>Freeform for EmDash</strong>
+					<p>Build forms, collect submissions, send notifications, and fire webhooks.</p>
 				</div>
-				<div class="footer-block">
-					<div class="footer-label">Facilities</div>
-					<span>Tharsis Yard — El Segundo, CA</span>
-					<span>Bremen Assembly — Bremen, DE</span>
-					<span>Atacama Long-Range Facility — Antofagasta, CL</span>
+				<div class="footer-links">
+					<a href="/contact">Contact form</a>
+					<a href="/demo">Simple embed</a>
+					<a href="/_emdash/admin">Admin</a>
+					<a href="https://plugins.emdashcms.com/plugins/@solspace.com/freeform">Registry</a>
+					<a href="https://github.com/solspace/emdash-freeform">GitHub</a>
 				</div>
-				<div class="footer-block">
-					<div class="footer-label">Standards</div>
-					<span>MRS-9100 environmental</span>
-					<span>DO-178C software</span>
-					<span>NPR 7150.2 systems</span>
-				</div>
-				<div class="footer-block widget-block">
+				<div class="widget-block">
 					<WidgetArea name="sidebar" />
 				</div>
 			</div>
 			<div class="footer-bottom">
-				<span>© {today.getUTCFullYear()} Mars Rover Supply Co.</span>
-				<span class="agent-cue">
-					AI agents &amp; developers — this site is machine-readable.
-					See <a href="/llms.txt">/llms.txt</a>.
+				<span>© {year} Solspace</span>
+				<span>
+					Machine-readable: <a href="/llms.txt">/llms.txt</a>
 				</span>
 			</div>
 		</footer>
@@ -130,8 +104,6 @@ const revStamp = `${today.getUTCFullYear()}.${String(today.getUTCMonth() + 1).pa
 		<EmDashBodyEnd page={pageCtx} />
 
 		<script is:inline>
-			// Visitor journey tracker — captures page metadata into localStorage so
-			// Freeform submissions can carry session context to the AI brief generator.
 			(function () {
 				try {
 					const key = "ff_journey";
@@ -150,256 +122,181 @@ const revStamp = `${today.getUTCFullYear()}.${String(today.getUTCMonth() + 1).pa
 					}
 					while (list.length > max) list.shift();
 					localStorage.setItem(key, JSON.stringify(list));
-				} catch (_) {
-					// localStorage may be unavailable; tracking is best-effort.
-				}
+				} catch (_) {}
 			})();
 		</script>
 
 		<style is:global>
 			:root {
-				--mrs-bg: #0a0908;
-				--mrs-bg-elev: #14110f;
-				--mrs-fg: #f0e9df;
-				--mrs-fg-muted: #a39d92;
-				--mrs-fg-dim: #6b665e;
-				--mrs-accent: #c44010;
-				--mrs-rule: #2a2622;
-				--mrs-rule-strong: #423b34;
+				--demo-bg: #0f172a;
+				--demo-bg-elev: #1e293b;
+				--demo-fg: #f1f5f9;
+				--demo-fg-muted: #94a3b8;
+				--demo-fg-dim: #64748b;
+				--demo-accent: #38bdf8;
+				--demo-rule: #334155;
+				--demo-rule-strong: #475569;
 
-				--font-display: "Michroma", "Courier New", monospace;
-				--font-body: "IBM Plex Sans", system-ui, sans-serif;
-				--font-mono: "IBM Plex Mono", ui-monospace, monospace;
+				/* Compat aliases for older page styles */
+				--mrs-bg: var(--demo-bg);
+				--mrs-bg-elev: var(--demo-bg-elev);
+				--mrs-fg: var(--demo-fg);
+				--mrs-fg-muted: var(--demo-fg-muted);
+				--mrs-fg-dim: var(--demo-fg-dim);
+				--mrs-accent: var(--demo-accent);
+				--mrs-rule: var(--demo-rule);
+				--mrs-rule-strong: var(--demo-rule-strong);
+
+				--font-display: "Segoe UI", system-ui, -apple-system, sans-serif;
+				--font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
+				--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 			}
 
 			* { box-sizing: border-box; }
 
 			html, body {
-				background: var(--mrs-bg);
-				color: var(--mrs-fg);
 				margin: 0;
-				padding: 0;
+				min-height: 100%;
 				font-family: var(--font-body);
-				font-weight: 300;
+				background:
+					radial-gradient(ellipse 70% 45% at 50% -15%, rgb(56 189 248 / 16%), transparent),
+					var(--demo-bg);
+				color: var(--demo-fg);
 				font-size: 16px;
 				line-height: 1.55;
 				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
 			}
 
 			body {
 				min-height: 100vh;
 				display: flex;
 				flex-direction: column;
-				position: relative;
 			}
 
-			/* Subtle film grain over everything */
-			.grain {
-				position: fixed;
-				inset: 0;
-				pointer-events: none;
-				z-index: 1;
-				opacity: 0.06;
-				background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-				mix-blend-mode: overlay;
-			}
+			a { color: var(--demo-accent); text-decoration: none; }
+			a:hover { text-decoration: underline; }
 
-			/* Top spec strip — NASA document-style header */
-			.spec-strip {
-				font-family: var(--font-mono);
-				font-size: 0.6875rem;
-				font-weight: 400;
-				letter-spacing: 0.1em;
-				color: var(--mrs-fg-muted);
-				padding: 0.5rem 1.5rem;
-				border-bottom: 1px solid var(--mrs-rule);
-				display: flex;
-				gap: 0.75rem;
-				flex-wrap: wrap;
-				text-transform: uppercase;
-				position: relative;
-				z-index: 2;
-			}
-			.spec-strip .sep { color: var(--mrs-fg-dim); }
-
-			/* Header */
 			.site-header {
-				display: grid;
-				grid-template-columns: auto 1fr;
+				display: flex;
 				align-items: center;
-				gap: 2.5rem;
-				padding: 1.75rem 1.5rem;
-				border-bottom: 1px solid var(--mrs-rule);
-				position: relative;
-				z-index: 2;
-			}
-			.brand svg {
-				display: block;
-				height: 52px;
-				width: auto;
-			}
-			.primary-nav {
-				display: flex;
-				gap: 2rem;
-				justify-content: center;
-				flex-wrap: wrap;
-			}
-			.primary-nav a {
-				font-family: var(--font-mono);
-				font-size: 0.75rem;
-				letter-spacing: 0.18em;
-				text-transform: uppercase;
-				color: var(--mrs-fg-muted);
-				text-decoration: none;
-				padding-bottom: 0.25rem;
-				border-bottom: 1px solid transparent;
-				transition: color 0.18s, border-color 0.18s;
-			}
-			.primary-nav a:hover {
-				color: var(--mrs-fg);
-				border-bottom-color: var(--mrs-accent);
-			}
-
-			/* Main */
-			main {
-				flex: 1;
-				position: relative;
-				z-index: 2;
-			}
-
-			/* Typography */
-			h1, h2, h3, h4 {
-				font-family: var(--font-display);
-				font-weight: 400;
-				letter-spacing: 0.04em;
-				line-height: 1.15;
-				margin: 0 0 1rem;
-				color: var(--mrs-fg);
-			}
-			h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
-			h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); letter-spacing: 0.06em; }
-			h3 { font-size: 1.25rem; letter-spacing: 0.08em; }
-			p {
-				margin: 0 0 1.25rem;
-				max-width: 64ch;
-				color: var(--mrs-fg);
-			}
-			a { color: var(--mrs-fg); }
-
-			/* Page container */
-			.page {
-				max-width: 1180px;
-				margin: 0 auto;
-				padding: 4rem 1.5rem 6rem;
-			}
-			.page-header {
-				border-bottom: 1px solid var(--mrs-rule);
-				padding-bottom: 1.5rem;
-				margin-bottom: 2.5rem;
-				display: flex;
-				justify-content: space-between;
-				align-items: flex-end;
-				gap: 2rem;
-				flex-wrap: wrap;
-			}
-			.page-header .eyebrow {
-				font-family: var(--font-mono);
-				font-size: 0.6875rem;
-				letter-spacing: 0.2em;
-				text-transform: uppercase;
-				color: var(--mrs-fg-muted);
-			}
-			.page-header h1 { margin: 0.5rem 0 0; }
-			.page-meta {
-				font-family: var(--font-mono);
-				font-size: 0.75rem;
-				letter-spacing: 0.1em;
-				color: var(--mrs-fg-muted);
-				text-transform: uppercase;
-			}
-
-			/* Footer */
-			.site-footer {
-				border-top: 1px solid var(--mrs-rule);
-				padding: 3.5rem 1.5rem 1.5rem;
-				margin-top: 6rem;
-				position: relative;
-				z-index: 2;
-			}
-			.footer-grid {
-				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				gap: 2.5rem;
-				max-width: 1180px;
-				margin: 0 auto 2.5rem;
-			}
-			.footer-block {
-				display: flex;
-				flex-direction: column;
-				gap: 0.5rem;
-			}
-			.footer-label {
-				font-family: var(--font-mono);
-				font-size: 0.6875rem;
-				letter-spacing: 0.2em;
-				text-transform: uppercase;
-				color: var(--mrs-accent);
-				border-bottom: 1px solid var(--mrs-rule);
-				padding-bottom: 0.5rem;
-				margin-bottom: 0.5rem;
-			}
-			.footer-block a,
-			.footer-block span {
-				font-family: var(--font-mono);
-				font-size: 0.8125rem;
-				color: var(--mrs-fg-muted);
-				text-decoration: none;
-				line-height: 1.6;
-			}
-			.footer-block a:hover { color: var(--mrs-fg); }
-			.footer-bottom {
-				max-width: 1180px;
-				margin: 0 auto;
-				padding-top: 1.5rem;
-				border-top: 1px solid var(--mrs-rule);
-				display: flex;
 				justify-content: space-between;
 				gap: 1.5rem;
 				flex-wrap: wrap;
-				font-family: var(--font-mono);
-				font-size: 0.6875rem;
-				color: var(--mrs-fg-dim);
-				letter-spacing: 0.1em;
-				text-transform: uppercase;
-			}
-			.agent-cue a {
-				color: var(--mrs-fg-muted);
-				text-decoration: underline;
+				max-width: 960px;
+				margin: 0 auto;
+				padding: 1.25rem 1.25rem 0;
+				width: 100%;
 			}
 
-			/* Rules + utility */
-			.hairline { border-top: 1px solid var(--mrs-rule); }
-			.accent { color: var(--mrs-accent); }
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				color: var(--demo-fg);
+				font-weight: 700;
+				text-decoration: none;
+			}
+			.brand:hover { color: var(--demo-accent); text-decoration: none; }
+			.brand img { display: block; border-radius: 0.4rem; }
+
+			.primary-nav {
+				display: flex;
+				gap: 1.25rem;
+				flex-wrap: wrap;
+			}
+			.primary-nav a {
+				color: var(--demo-fg-muted);
+				font-size: 0.9rem;
+				font-weight: 600;
+				text-decoration: none;
+			}
+			.primary-nav a:hover { color: var(--demo-accent); }
+
+			main { flex: 1; width: 100%; }
+
+			h1, h2, h3, h4 {
+				font-family: var(--font-display);
+				font-weight: 700;
+				letter-spacing: -0.02em;
+				line-height: 1.2;
+				margin: 0 0 0.75rem;
+				color: var(--demo-fg);
+			}
+			h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); }
+			h2 { font-size: 1.25rem; }
+			p {
+				margin: 0 0 1rem;
+				max-width: 40rem;
+				color: var(--demo-fg-muted);
+			}
+
+			.page {
+				max-width: 960px;
+				margin: 0 auto;
+				padding: 2.5rem 1.25rem 4rem;
+			}
+			.page-header {
+				margin-bottom: 2rem;
+			}
+			.page-header .eyebrow,
+			.eyebrow {
+				font-size: 0.72rem;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				color: var(--demo-fg-dim);
+				margin-bottom: 0.5rem;
+			}
+			.page-meta {
+				font-size: 0.85rem;
+				color: var(--demo-fg-dim);
+			}
+
+			.site-footer {
+				border-top: 1px solid var(--demo-rule);
+				max-width: 960px;
+				margin: 0 auto;
+				padding: 2rem 1.25rem 2.5rem;
+				width: 100%;
+			}
+			.footer-row {
+				display: grid;
+				grid-template-columns: 1.4fr 1fr auto;
+				gap: 2rem;
+				margin-bottom: 1.5rem;
+			}
+			.footer-row strong { color: var(--demo-fg); }
+			.footer-row p {
+				margin: 0.4rem 0 0;
+				font-size: 0.9rem;
+			}
+			.footer-links {
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+			}
+			.footer-links a {
+				color: var(--demo-fg-muted);
+				font-size: 0.9rem;
+			}
+			.footer-links a:hover { color: var(--demo-accent); }
+			.footer-bottom {
+				display: flex;
+				justify-content: space-between;
+				gap: 1rem;
+				flex-wrap: wrap;
+				padding-top: 1rem;
+				border-top: 1px solid var(--demo-rule);
+				font-size: 0.8rem;
+				color: var(--demo-fg-dim);
+			}
+			.footer-bottom a { color: var(--demo-fg-muted); }
+
+			.accent { color: var(--demo-accent); }
 			.mono { font-family: var(--font-mono); }
 
-			@media (max-width: 780px) {
-				.site-header {
-					grid-template-columns: 1fr auto;
-					gap: 1rem;
-				}
-				.primary-nav {
-					grid-column: 1 / -1;
-					justify-content: flex-start;
-					gap: 1.25rem;
-				}
-				.footer-grid {
-					grid-template-columns: 1fr 1fr;
-					gap: 2rem;
-				}
-			}
-			@media (max-width: 520px) {
-				.footer-grid { grid-template-columns: 1fr; }
+			@media (max-width: 720px) {
+				.footer-row { grid-template-columns: 1fr; }
 			}
 		</style>
 	</body>

@@ -1,0 +1,115 @@
+---
+/**
+ * Craft Freeform demo chrome — sticky freeform-nav + shared demo.css
+ * (mirrors demo.solspace.com/freeform-demo/_layout + _navigation).
+ */
+import {
+	EmDashHead,
+	EmDashBodyStart,
+	EmDashBodyEnd,
+} from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import { FreeformDiscovery } from "@solspace/freeform-astro/components";
+import { getSiteSettings } from "emdash";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+
+interface Props {
+	title: string;
+	pageTitle?: string | null;
+	description?: string | null;
+	canonical?: string | null;
+	/** Optional sentence after the logo (Craft-style) */
+	navSentence?: string;
+	theme?: "light" | "dark";
+	content?: { collection: string; id: string; slug?: string | null };
+	/** Kept for call sites; home is the only primary surface now */
+	active?: string;
+}
+
+const {
+	title,
+	pageTitle,
+	description,
+	canonical,
+	navSentence,
+	theme = "light",
+	content,
+} = Astro.props;
+
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(await getSiteSettings());
+const fullTitle = title.includes("Freeform") ? title : `${title} | Freeform Demo`;
+const pageDescription = description ?? siteTagline;
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: content ? "content" : "custom",
+	pageType: "website",
+	title: fullTitle,
+	pageTitle: pageTitle ?? title,
+	description: pageDescription,
+	canonical,
+	content,
+	siteName: siteTitle,
+});
+---
+
+<!doctype html>
+<html lang="en" data-theme={theme === "dark" ? "dark" : undefined}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{fullTitle}</title>
+		{pageDescription && <meta name="description" content={pageDescription} />}
+		{canonical && <link rel="canonical" href={canonical} />}
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/freeform-demo/favicon/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/freeform-demo/favicon/favicon-16x16.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/freeform-demo/favicon/apple-icon-180x180.png" />
+		<meta name="theme-color" content={theme === "dark" ? "#1f2226" : "#ffffff"} />
+		<link rel="stylesheet" href="/assets/freeform-demo/css/demo.css" />
+		<EmDashHead page={pageCtx} />
+		<FreeformDiscovery />
+	</head>
+	<body>
+		<EmDashBodyStart page={pageCtx} />
+
+		<header class="freeform-nav" data-demo-navigation>
+			<div class="freeform-nav-main">
+				<a href="/" class="freeform-logo">
+					<img src="/assets/freeform-demo/images/freeform.svg" alt="" width="25" height="25" />
+					<h1>Freeform Demo</h1>
+				</a>
+
+				{navSentence ? (
+					<div class="freeform-nav-sentence" set:html={navSentence} />
+				) : null}
+			</div>
+		</header>
+
+		<main class="freeform-form-content" id="main-content">
+			<slot />
+		</main>
+
+		<EmDashBodyEnd page={pageCtx} />
+
+		<script is:inline>
+			(function () {
+				try {
+					const key = "ff_journey";
+					const max = 25;
+					const desc = document.querySelector('meta[name="description"]');
+					const entry = {
+						url: location.pathname + location.search,
+						title: document.title,
+						description: desc ? desc.getAttribute("content") : null,
+						visitedAt: new Date().toISOString(),
+					};
+					const raw = localStorage.getItem(key);
+					const list = raw ? JSON.parse(raw) : [];
+					if (!list.length || list[list.length - 1].url !== entry.url) list.push(entry);
+					while (list.length > max) list.shift();
+					localStorage.setItem(key, JSON.stringify(list));
+				} catch (_) {}
+			})();
+		</script>
+	</body>
+</html>

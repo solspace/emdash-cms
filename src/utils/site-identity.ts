@@ -12,9 +12,9 @@ export interface StarterSiteIdentitySettings {
 	favicon?: MediaReference;
 }
 
-const DEFAULT_SITE_TITLE = "Mars Rover Supply Co.";
+const DEFAULT_SITE_TITLE = "Freeform Demo";
 const DEFAULT_SITE_TAGLINE =
-	"EmDash + Freeform demo — engineering for the world beyond ours.";
+	"Solspace Freeform on EmDash — forms, submissions, notifications, and AI.";
 
 export function resolveStarterSiteIdentity(settings?: StarterSiteIdentitySettings) {
 	return {

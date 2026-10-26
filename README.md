@@ -2,7 +2,7 @@
 
 Public reference site showing how to run **[EmDash](https://emdashcms.com)** with **[Freeform](https://plugins.emdashcms.com/plugins/@solspace.com/freeform)** — Solspace’s form builder for EmDash.
 
-The front end is a fictional product company (**Mars Rover Supply Co.**) so you can see forms, AI chat intake, submissions, and theming in a realistic layout—not a blank starter.
+The front end is a **Solspace Freeform product demo** (same idea as [demo.solspace.com](https://demo.solspace.com) for Craft) — try forms, AI chat intake, submissions, and theming without a fictional brand story.
 
 | Piece | Role |
 | --- | --- |
@@ -107,7 +107,7 @@ import { FreeformChat } from "@solspace/freeform-astro/components";
 
 <FreeformChat
   formHandle="contact"
-  siteName="Mars Rover Supply Co."
+  siteName="Solspace Freeform"
   salesContext="Short product/context blurb for the concierge…"
 />
 ```
