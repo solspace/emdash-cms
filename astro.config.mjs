@@ -3,11 +3,21 @@ import { fileURLToPath } from "node:url";
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
+import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
 import { freeformPlugin } from "@local/freeform";
 import freeformAstro from "@solspace/freeform-astro";
 import { emdashSsrDeps } from "./vite-emdash-ssr-deps.mjs";
+
+/** Cloudflare Email Sending From — must be on an Email Sending–onboarded zone
+ *  in the *same* Cloudflare account as this Worker. Override at deploy time. */
+const EMAIL_FROM =
+  process.env.FREEFORM_EMAIL_FROM?.trim() || "noreply@solspace.net";
+const EMAIL_FROM_NAME =
+  process.env.FREEFORM_EMAIL_FROM_NAME?.trim() || "Freeform Demo";
+const EMAIL_REPLY_TO =
+  process.env.FREEFORM_EMAIL_REPLY_TO?.trim() || "hello@solspace.com";
 
 const CMS_ROOT = path.dirname(fileURLToPath(import.meta.url));
 const FREEFORM_ROOT = path.resolve(CMS_ROOT, "../freeform");
@@ -39,8 +49,14 @@ export default defineConfig({
       // Skip Astro Font API / Google Fonts download at build time — local proxy
       // often 502s fonts.gstatic.com. Admin falls back to system fonts.
       fonts: false,
-      // Trusted plugin — works without Dynamic Workers / LOADER.
-      plugins: [freeformPlugin()],
+      // Trusted plugins — Freeform + Cloudflare Email Sending (wrangler send_email).
+      plugins: [
+        freeformPlugin(),
+        cloudflareEmail({
+          from: { email: EMAIL_FROM, name: EMAIL_FROM_NAME },
+          replyTo: EMAIL_REPLY_TO,
+        }),
+      ],
     }),
     freeformAstro(),
     {

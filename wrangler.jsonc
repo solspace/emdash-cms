@@ -49,4 +49,12 @@
 			"service": "freeform-demo",
 		},
 	],
+	// EmDash email pipeline (invites, magic links, Freeform notifications).
+	// Sender domain must be onboarded for Cloudflare Email Sending on this
+	// account — see README. From address is set in astro.config.mjs.
+	"send_email": [
+		{
+			"name": "EMAIL",
+		},
+	],
 }

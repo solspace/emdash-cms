@@ -112,7 +112,31 @@ import { FreeformChat } from "@solspace/freeform-astro/components";
 />
 ```
 
-### 4. Optional AI features
+### 4. Email (Cloudflare)
+
+Production uses EmDash’s email pipeline via `cloudflareEmail()` and a Wrangler `send_email` binding (`EMAIL`). Freeform notifications, invites, and magic links all go through **Settings → Email**.
+
+1. Onboard a sender domain for [Cloudflare Email Sending](https://developers.cloudflare.com/email-service/) on the **same Cloudflare account** that owns this Worker (zone + Worker must match). Example:
+
+   ```bash
+   pnpm exec wrangler email sending enable solspace.net
+   # add the DNS records it prints, then:
+   pnpm exec wrangler email sending settings solspace.net
+   ```
+
+2. Optional From overrides at build/deploy time (defaults: `noreply@solspace.net`):
+
+   ```bash
+   export FREEFORM_EMAIL_FROM=noreply@solspace.net
+   export FREEFORM_EMAIL_FROM_NAME="Freeform Demo"
+   export FREEFORM_EMAIL_REPLY_TO=hello@solspace.com
+   ```
+
+3. Deploy, open **Settings → Email**, confirm the Cloudflare provider is selected, and send a test.
+
+Until the domain is accepted on this account, the provider is installed but sends will fail. If the Worker lives on a personal account without the Solspace zone, either move the Worker to the account that has `solspace.net`, or onboard another zone you control there.
+
+### 5. Optional AI features
 
 Form generation, spam scoring, and submission briefs need your own **OpenAI** API key under **Freeform → Settings → AI & spam**. Without a key, hand-built forms, submissions, email, and webhooks still work.
 
