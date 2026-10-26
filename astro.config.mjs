@@ -1,3 +1,5 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
@@ -6,6 +8,9 @@ import emdash from "emdash/astro";
 import { freeformPlugin } from "@local/freeform";
 import freeformAstro from "@solspace/freeform-astro";
 import { emdashSsrDeps } from "./vite-emdash-ssr-deps.mjs";
+
+const CMS_ROOT = path.dirname(fileURLToPath(import.meta.url));
+const FREEFORM_ROOT = path.resolve(CMS_ROOT, "../freeform");
 
 const REACT_OPTIMIZE = [
   "react",
@@ -50,13 +55,45 @@ export default defineConfig({
     plugins: [emdashSsrDeps()],
     resolve: {
       dedupe: ["react", "react-dom"],
-      alias: { "react-dom/server": "react-dom/server.edge" },
+      alias: [
+        // Prefer the live Freeform repo over the pnpm store copy so admin HMR
+        // and native plugin entry track ../freeform without a manual sync.
+        {
+          find: "@local/freeform/admin",
+          replacement: path.join(FREEFORM_ROOT, "src/admin.tsx"),
+        },
+        {
+          find: "@local/freeform/native",
+          replacement: path.join(FREEFORM_ROOT, "dist/native-entry.js"),
+        },
+        {
+          find: "@local/freeform/sandbox",
+          replacement: path.join(FREEFORM_ROOT, "dist/plugin.mjs"),
+        },
+        { find: "react-dom/server", replacement: "react-dom/server.edge" },
+      ],
     },
     optimizeDeps: {
       include: REACT_OPTIMIZE,
+      exclude: [
+        "@local/freeform",
+        "@local/freeform/native",
+        "@local/freeform/admin",
+        "@local/freeform/sandbox",
+        "@solspace/freeform-astro",
+      ],
+    },
+    ssr: {
+      // Transform the linked Freeform package (TS admin/native) instead of
+      // treating it as a prebundled opaque dependency.
+      noExternal: ["@local/freeform", "@solspace/freeform-astro"],
     },
     server: {
       allowedHosts: [".trycloudflare.com"],
+      // Admin/native resolve into ../freeform via aliases above.
+      fs: {
+        allow: [CMS_ROOT, FREEFORM_ROOT],
+      },
     },
   },
 });

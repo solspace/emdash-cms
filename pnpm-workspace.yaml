@@ -1,7 +1,13 @@
 packages: []
 
-# Standalone EmDash site. The Freeform product repo lives at ../freeform;
-# this site consumes it via file: dependencies (see package.json).
+# EmDash + Freeform example site (Solspace).
+#
+# Default layout for maintainers (sibling Freeform checkout):
+#   ../freeform  → https://github.com/solspace/emdash-freeform
+#
+# Public clones without a sibling repo should switch package.json deps to:
+#   "@solspace/freeform-astro": "^0.1.1"
+# and install the Freeform plugin from the EmDash registry (see README).
 
 allowBuilds:
   better-sqlite3: true

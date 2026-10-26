@@ -1,13 +1,18 @@
-This is an EmDash site -- a CMS built on Astro with a full admin UI.
+This is the **Solspace public example** EmDash site with **Freeform**
+(forms, submissions, AI chat intake). See `README.md` for the visitor-facing
+setup guide.
 
 ## Commands
 
 ```bash
-npx emdash dev        # Start dev server (runs migrations, seeds, generates types)
+pnpm dev              # Preferred — syncs sibling Freeform when present, then Astro
+pnpm freeform:sync    # Rebuild/sync local Freeform + clear Vite cache
 npx emdash types      # Regenerate TypeScript types from schema
 ```
 
 The admin UI is at `http://localhost:4321/_emdash/admin`.
+Freeform lives under **Plugins** (registry) or as a trusted local plugin when
+`../freeform` is checked out beside this repo.
 
 ## Key Files
 

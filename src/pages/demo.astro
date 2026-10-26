@@ -241,30 +241,28 @@ import { FreeformForm } from "@solspace/freeform-astro/components";
    <div class="demo-shell">
     <div class="page">
       <div class="header">
-        <h1>Freeform for Emdash</h1>
+        <h1>Freeform for EmDash</h1>
         <p>
-          Proof of concept — form builder plugin with AI generation and license key gating.
+          Minimal light-theme embed of <code>&lt;FreeformForm /&gt;</code>.
+          For a fully themed example with AI chat, see
+          <a href="/contact">/contact</a>.
         </p>
       </div>
 
       <div class="card">
-        <h2>Contact Us</h2>
+        <h2>Contact</h2>
         <FreeformForm formId="contact" />
       </div>
 
       <div class="note">
         <p>
           <strong>How to use Freeform:</strong>
-          Go to <a href="/_emdash/admin">the admin panel</a> → Freeform → Forms to
-          create and edit forms, then embed them anywhere with
-          <code>&lt;FreeformForm formId="your-form-id" /&gt;</code>.
-        </p>
-        <br />
-        <p>
-          <strong>License key demo:</strong> In the admin, go to Settings and enter any key
-          starting with <code>FF-</code> (e.g. <code>FF-DEMO-1234</code>) to unlock Pro
-          features — including the email field type. On the free plan, adding an email field
-          via the AI builder or manually will be blocked.
+          Open <a href="/_emdash/admin">EmDash admin</a> → Freeform → Forms to
+          create forms, then embed with
+          <code>&lt;FreeformForm formId="your-handle" /&gt;</code>.
+          Install the plugin from <strong>Plugins → Registry</strong> and add
+          <code>@solspace/freeform-astro</code> to your Astro site.
+          Full walkthrough: <a href="https://github.com/solspace/emdash-cms#readme">README</a>.
         </p>
       </div>
     </div>

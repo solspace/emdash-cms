@@ -3,12 +3,12 @@
 	"version": "1",
 	"meta": {
 		"name": "Mars Rover Supply",
-		"description": "Demo site for EmDash + Freeform — Mars Rover Supply Co.",
+		"description": "Solspace public example: EmDash CMS with Freeform forms, AI chat intake, and Cloudflare.",
 		"author": "Solspace"
 	},
 	"settings": {
 		"title": "Mars Rover Supply Co.",
-		"tagline": "Engineering for the world beyond ours."
+		"tagline": "EmDash + Freeform demo — engineering for the world beyond ours."
 	},
 	"collections": [
 		{

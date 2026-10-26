@@ -31,6 +31,18 @@ const EMDASH_OPTIMIZE_EXCLUDE = [
   "emdash/ui",
 ];
 
+/**
+ * Local Freeform package exports TypeScript sources for native/admin.
+ * Vite's SSR dep optimizer cannot pre-bundle those — leave them to Vite transform.
+ */
+const FREEFORM_OPTIMIZE_EXCLUDE = [
+  "@local/freeform",
+  "@local/freeform/native",
+  "@local/freeform/admin",
+  "@local/freeform/sandbox",
+  "@solspace/freeform-astro",
+];
+
 export function emdashSsrDeps() {
   return {
     name: "emdash-ssr-deps",
@@ -47,6 +59,7 @@ export function emdashSsrDeps() {
               ...prevExclude,
               ...CLOUDFLARE_OPTIMIZE_EXCLUDE,
               ...EMDASH_OPTIMIZE_EXCLUDE,
+              ...FREEFORM_OPTIMIZE_EXCLUDE,
             ]),
           ],
         },

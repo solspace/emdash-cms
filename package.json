@@ -1,15 +1,36 @@
 {
-  "name": "cms",
-  "version": "0.0.3",
+  "name": "@solspace/emdash-cms",
+  "version": "1.0.0",
   "private": true,
+  "description": "Solspace example EmDash site with Freeform — forms, AI chat intake, and Cloudflare deploy.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solspace/emdash-cms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/solspace/emdash-cms/issues"
+  },
+  "homepage": "https://github.com/solspace/emdash-cms#readme",
+  "license": "MIT",
+  "keywords": [
+    "emdash",
+    "freeform",
+    "solspace",
+    "astro",
+    "cloudflare",
+    "cms",
+    "forms"
+  ],
   "emdash": {
-    "label": "Starter",
+    "label": "Mars Rover Supply (Freeform demo)",
     "seed": "seed/seed.json"
   },
   "scripts": {
-    "dev": "npm --prefix ../freeform run build && astro dev",
-    "dev:clean": "npm --prefix ../freeform run build && rm -rf node_modules/.vite && astro dev",
+    "dev": "node scripts/dev.mjs",
+    "dev:clean": "node scripts/sync-freeform.mjs --build --clean && astro dev --host 127.0.0.1 --port 4321",
+    "dev:astro": "astro dev --host 127.0.0.1 --port 4321",
+    "freeform:sync": "node scripts/sync-freeform.mjs --build --clean",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "astro build && wrangler deploy",
@@ -22,9 +43,12 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.6.0",
     "@astrojs/react": "^5.0.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emdash-cms/cloudflare": "^1.3.1",
-    "@solspace/freeform-astro": "file:../freeform/packages/astro",
     "@local/freeform": "file:../freeform",
+    "@solspace/freeform-astro": "file:../freeform/packages/astro",
     "astro": "^6.4.2",
     "emdash": "^1.3.1",
     "react": "19.2.4",

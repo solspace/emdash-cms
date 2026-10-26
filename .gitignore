@@ -3,6 +3,9 @@ dist
 .astro
 uploads
 data.db
+.DS_Store
+*.log
+.turbo
 
 # Environment / Wrangler secrets
 .env
