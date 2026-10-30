@@ -64,7 +64,7 @@ npx @emdash-cms/plugin-cli info solspace.com freeform
 ### 2. Astro integration (already in this repo)
 
 ```bash
-pnpm add @solspace/freeform-astro
+pnpm add @solspace/freeform-astro@1.1.0
 ```
 
 ```js

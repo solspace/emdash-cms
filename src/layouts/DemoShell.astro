@@ -32,7 +32,7 @@ const {
 	description,
 	canonical,
 	navSentence,
-	theme = "light",
+	theme = "dark",
 	content,
 } = Astro.props;
 
@@ -54,7 +54,7 @@ const pageCtx = createPublicPageContext({
 ---
 
 <!doctype html>
-<html lang="en" data-theme={theme === "dark" ? "dark" : undefined}>
+<html lang="en" data-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -64,7 +64,7 @@ const pageCtx = createPublicPageContext({
 		<link rel="icon" type="image/png" sizes="32x32" href="/assets/freeform-demo/favicon/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/assets/freeform-demo/favicon/favicon-16x16.png" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/assets/freeform-demo/favicon/apple-icon-180x180.png" />
-		<meta name="theme-color" content={theme === "dark" ? "#1f2226" : "#ffffff"} />
+		<meta name="theme-color" content={theme === "dark" ? "#0b0f17" : "#0f172a"} />
 		<link rel="stylesheet" href="/assets/freeform-demo/css/demo.css" />
 		<EmDashHead page={pageCtx} />
 		<FreeformDiscovery />
@@ -76,12 +76,33 @@ const pageCtx = createPublicPageContext({
 			<div class="freeform-nav-main">
 				<a href="/" class="freeform-logo">
 					<img src="/assets/freeform-demo/images/freeform.svg" alt="" width="25" height="25" />
-					<h1>Freeform Demo</h1>
+					<h1>Emdash Freeform Demo</h1>
 				</a>
 
 				{navSentence ? (
 					<div class="freeform-nav-sentence" set:html={navSentence} />
 				) : null}
+
+				<div class="freeform-primary-links">
+					<a
+						href="https://github.com/solspace/emdash-freeform/blob/main/docs/installation.md"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="freeform-nav-docs-link"
+						title="Freeform Documentation on GitHub"
+					>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+							<path d="M6 6h10"></path>
+							<path d="M6 10h10"></path>
+						</svg>
+						<span>Documentation</span>
+						<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;" aria-hidden="true">
+							<path d="M7 17L17 7"></path>
+							<path d="M7 7h10v10"></path>
+						</svg>
+					</a>
+				</div>
 			</div>
 		</header>
 
@@ -110,6 +131,30 @@ const pageCtx = createPublicPageContext({
 					localStorage.setItem(key, JSON.stringify(list));
 				} catch (_) {}
 			})();
+
+			// Toggle demo form nav dropdown only on click, dismiss on outside click
+			document.addEventListener("click", function (e) {
+				const dd = document.getElementById("demo-form-dropdown");
+				if (!dd) return;
+				const btn = dd.querySelector(".freeform-nav-button");
+				if (btn && (btn === e.target || btn.contains(e.target))) {
+					e.preventDefault();
+					e.stopPropagation();
+					const isOpen = dd.hasAttribute("data-open");
+					if (isOpen) {
+						dd.removeAttribute("data-open");
+						btn.setAttribute("aria-expanded", "false");
+					} else {
+						dd.setAttribute("data-open", "");
+						btn.setAttribute("aria-expanded", "true");
+					}
+					return;
+				}
+				if (!dd.contains(e.target)) {
+					dd.removeAttribute("data-open");
+					btn?.setAttribute("aria-expanded", "false");
+				}
+			});
 		</script>
 	</body>
 </html>

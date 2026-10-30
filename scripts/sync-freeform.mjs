@@ -20,6 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CMS_ROOT = path.resolve(__dirname, "..");
 const FREEFORM_ROOT = path.resolve(CMS_ROOT, "../freeform");
 const LINK_PATH = path.join(CMS_ROOT, "node_modules/@local/freeform");
+const ASTRO_LINK_PATH = path.join(CMS_ROOT, "node_modules/@solspace/freeform-astro");
 
 const args = new Set(process.argv.slice(2));
 const doBuild = args.has("--build");
@@ -76,6 +77,22 @@ function main() {
     const src = path.join(FREEFORM_ROOT, name);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(pkgRoot, name));
+    }
+  }
+
+  if (fs.existsSync(ASTRO_LINK_PATH)) {
+    const astroPkgRoot = fs.realpathSync(ASTRO_LINK_PATH);
+    const astroSrc = path.join(FREEFORM_ROOT, "packages/astro");
+    if (fs.existsSync(astroSrc)) {
+      console.log(`[freeform:sync] → ${astroPkgRoot}`);
+      syncTree(path.join(astroSrc, "src"), path.join(astroPkgRoot, "src"));
+      if (fs.existsSync(path.join(astroSrc, "dist"))) {
+        syncTree(path.join(astroSrc, "dist"), path.join(astroPkgRoot, "dist"));
+      }
+      const astroPkgJson = path.join(astroSrc, "package.json");
+      if (fs.existsSync(astroPkgJson)) {
+        fs.copyFileSync(astroPkgJson, path.join(astroPkgRoot, "package.json"));
+      }
     }
   }
 

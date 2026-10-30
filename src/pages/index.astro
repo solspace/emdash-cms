@@ -1,100 +1,368 @@
 ---
+export const prerender = false;
+
 /**
- * Home = live Freeform demo (Craft freeform-demo style): sticky nav + form.
+ * Home = Solspace Freeform Demo Showcase: Form list cards.
+ * Each form opens on its own dedicated separate page (/forms/[handle]).
  */
+import { env } from "cloudflare:workers";
 import DemoShell from "../layouts/DemoShell.astro";
-import { FreeformForm } from "@solspace/freeform-astro/components";
+
+interface PublicForm {
+	id: string;
+	handle: string;
+	name: string;
+	fieldCount?: number;
+	cardColor?: string | null;
+	description?: string | null;
+}
+
+let forms: PublicForm[] = [];
+const fetcher = (env as any).SELF ?? globalThis;
+try {
+	const res = await fetcher.fetch(
+		`${Astro.url.origin}/_emdash/api/plugins/freeform/list-public-forms`,
+	);
+	if (res.ok) {
+		const json = (await res.json()) as { data?: { forms?: PublicForm[] } };
+		forms = json.data?.forms ?? [];
+	}
+} catch {
+	forms = [];
+}
+
+const formLinks = forms
+	.map(
+		(f) =>
+			`<a href="/forms/${encodeURIComponent(f.handle)}" role="menuitem"><span class="freeform-form-circle" style="background: ${f.cardColor || "#38bdf8"};"></span>${f.name}</a>`,
+	)
+	.join("");
+
+const navSentence = forms.length > 0
+	? `Explore demo forms or jump directly to <div class="freeform-nav-dropdown" id="demo-form-dropdown"><button type="button" class="freeform-nav-button" aria-haspopup="true" aria-expanded="false"><span class="freeform-form-circle" style="background: #38bdf8;"></span>Select Form</button><div class="freeform-nav-dropdown-content" role="menu">${formLinks}</div></div>`
+	: `Solspace Freeform on EmDash — Live demo showcase.`;
 ---
 
 <DemoShell
-	title="Freeform Demo"
+	title="Freeform Demo | Solspace on EmDash"
 	active="forms"
-	navSentence="This section has automatically loaded the <b>Contact</b> form."
+	navSentence={navSentence}
 >
-	<div class="freeform-page-heading">
-		<h2>Contact</h2>
-		<p>Solspace Freeform on EmDash — try the form below.</p>
-	</div>
+	<div class="freeform-landing-container">
+		<!-- Hero Section -->
+		<header class="freeform-landing-hero">
+			<div class="freeform-hero-badge">
+				<span class="hero-badge-dot"></span>
+				Solspace Freeform for EmDash
+			</div>
+			<h1>Interactive Form Demos</h1>
+			<p>
+				Select any demo form below to test live validation, honeypot spam protection,
+				and email notifications. Each form runs on its own dedicated page.
+			</p>
+		</header>
 
-	<div class="demo-form">
-		<FreeformForm formId="contact" />
+		<!-- Forms Cards Grid -->
+		<section class="freeform-showcase-section" aria-label="Available forms">
+			<div class="freeform-showcase-header">
+				<div class="showcase-title-row">
+					<h2>Available Forms</h2>
+					<span class="showcase-count-pill">
+						{forms.length} {forms.length === 1 ? "Form" : "Forms"}
+					</span>
+				</div>
+				<p>Choose a form to try it live or view its field layout.</p>
+			</div>
+
+			<div class="freeform-cards-grid">
+				{forms.map((form) => {
+					const accent = form.cardColor || "#2563eb";
+					return (
+						<article class="freeform-form-card" style={`--form-accent: ${accent}`}>
+							<div class="card-header">
+								<div class="card-icon" style={`background: ${accent}18; color: ${accent}; border-color: ${accent}30;`}>
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22">
+										<rect x="3" y="5" width="18" height="14" rx="2" />
+										<path d="m3 7 9 6 9-6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</div>
+								<span class="card-field-count">
+									{form.fieldCount ?? 4} fields
+								</span>
+							</div>
+
+							<div class="card-body">
+								<h3>{form.name}</h3>
+								<p class="card-handle">
+									<code>/forms/{form.handle}</code>
+								</p>
+							</div>
+
+							<div class="card-footer">
+								<a href={`/forms/${encodeURIComponent(form.handle)}`} class="card-open-btn">
+									<span>Open Form</span>
+									<svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M4 10h12m-5-5 5 5-5 5"/>
+									</svg>
+								</a>
+							</div>
+						</article>
+					);
+				})}
+			</div>
+		</section>
 	</div>
 </DemoShell>
 
 <style>
-	.demo-form {
-		max-width: 640px;
+	.freeform-landing-container {
+		max-width: 960px;
+		margin: 0 auto;
+		padding: 1.5rem 0 3rem 0;
 	}
-</style>
 
-<style is:global>
-	[data-freeform-form] {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		font-family: sans-serif;
+	/* Hero */
+	.freeform-landing-hero {
+		text-align: center;
+		padding: 2.5rem 1rem 3rem 1rem;
+		max-width: 680px;
+		margin: 0 auto;
 	}
-	[data-freeform-row] {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
+
+	.freeform-hero-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: #2563eb;
+		background: #eff6ff;
+		border: 1px solid #bfdbfe;
+		padding: 4px 14px;
+		border-radius: 20px;
+		margin-bottom: 1.25rem;
 	}
-	[data-freeform-field] {
-		flex: 1;
-		min-width: 12rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.35rem;
+
+	:root[data-theme="dark"] .freeform-hero-badge {
+		background: #1e3a8a30;
+		border-color: #1d4ed850;
+		color: #60a5fa;
 	}
-	[data-freeform-field] label,
-	[data-freeform-group-label] {
-		font: 500 13px sans-serif;
-		color: var(--page-text, #4e4e4e);
+
+	.hero-badge-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #2563eb;
+		box-shadow: 0 0 6px #2563eb;
 	}
-	[data-freeform-required-mark] {
-		color: #dc3545;
+
+	:root[data-theme="dark"] .hero-badge-dot {
+		background: #60a5fa;
+		box-shadow: 0 0 6px #60a5fa;
 	}
-	[data-freeform-input] {
-		width: 100%;
-		padding: 0.5rem 0.65rem;
-		border: 1px solid #ced4da;
-		border-radius: 6px;
-		font: 400 14px sans-serif;
-		color: #212529;
-		background: #fff;
-		box-sizing: border-box;
+
+	.freeform-landing-hero h1 {
+		font-size: 2.4rem;
+		font-weight: 800;
+		letter-spacing: -0.025em;
+		color: #0f172a;
+		margin: 0 0 1rem 0;
+		line-height: 1.2;
 	}
-	[data-freeform-input]:focus {
-		outline: none;
-		border-color: #86b7fe;
-		box-shadow: 0 0 0 3px rgb(13 110 253 / 20%);
+
+	:root[data-theme="dark"] .freeform-landing-hero h1 {
+		color: #f8fafc;
 	}
-	textarea[data-freeform-input] {
-		min-height: 6rem;
-		resize: vertical;
+
+	.freeform-landing-hero p {
+		font-size: 1.05rem;
+		line-height: 1.6;
+		color: #64748b;
+		margin: 0;
 	}
-	[data-freeform-options] {
-		display: flex;
-		flex-direction: column;
-		gap: 0.35rem;
+
+	:root[data-theme="dark"] .freeform-landing-hero p {
+		color: #94a3b8;
 	}
-	[data-freeform-option] {
+
+	/* Showcase Header */
+	.freeform-showcase-section {
+		margin-bottom: 3.5rem;
+	}
+
+	.freeform-showcase-header {
+		margin-bottom: 1.75rem;
+	}
+
+	.showcase-title-row {
 		display: flex;
 		align-items: center;
-		gap: 0.4rem;
-		font: 400 14px sans-serif;
+		gap: 0.75rem;
+		margin-bottom: 0.35rem;
 	}
-	[data-freeform-submit] {
-		align-self: flex-start;
-		padding: 0.5rem 1.1rem;
-		background: #0d6efd;
-		color: #fff;
-		border: none;
+
+	.showcase-title-row h2 {
+		font-size: 1.35rem;
+		font-weight: 700;
+		color: #0f172a;
+		margin: 0;
+	}
+
+	:root[data-theme="dark"] .showcase-title-row h2 {
+		color: #f8fafc;
+	}
+
+	.showcase-count-pill {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #475569;
+		background: #f1f5f9;
+		border: 1px solid #e2e8f0;
+		padding: 2px 8px;
+		border-radius: 12px;
+	}
+
+	:root[data-theme="dark"] .showcase-count-pill {
+		background: #334155;
+		border-color: #475569;
+		color: #cbd5e1;
+	}
+
+	.freeform-showcase-header p {
+		color: #64748b;
+		font-size: 0.92rem;
+		margin: 0;
+	}
+
+	:root[data-theme="dark"] .freeform-showcase-header p {
+		color: #94a3b8;
+	}
+
+	/* Cards Grid */
+	.freeform-cards-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.freeform-form-card {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		background: #ffffff;
+		border: 1.5px solid #e2e8f0;
+		border-radius: 14px;
+		padding: 1.5rem;
+		transition: all 0.2s ease-in-out;
+		box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+	}
+
+	:root[data-theme="dark"] .freeform-form-card {
+		background: #1e293b;
+		border-color: #334155;
+		box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
+	}
+
+	.freeform-form-card:hover {
+		border-color: var(--form-accent, #2563eb);
+		transform: translateY(-3px);
+		box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.12);
+	}
+
+	.card-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1.25rem;
+	}
+
+	.card-icon {
+		width: 44px;
+		height: 44px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		border: 1px solid;
+	}
+
+	.card-field-count {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: #64748b;
+		background: #f8fafc;
+		border: 1px solid #e2e8f0;
+		padding: 3px 10px;
+		border-radius: 12px;
+	}
+
+	:root[data-theme="dark"] .card-field-count {
+		background: #0f172a;
+		border-color: #334155;
+		color: #94a3b8;
+	}
+
+	.card-body h3 {
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: #0f172a;
+		margin: 0 0 0.5rem 0;
+	}
+
+	:root[data-theme="dark"] .card-body h3 {
+		color: #f8fafc;
+	}
+
+	.card-handle {
+		margin: 0 0 1.25rem 0;
+	}
+
+	.card-handle code {
+		font-size: 0.78rem;
+		color: #475569;
+		background: #f1f5f9;
+		padding: 3px 8px;
 		border-radius: 6px;
-		font: 500 14px sans-serif;
-		cursor: pointer;
 	}
-	[data-freeform-submit]:hover:not(:disabled) {
-		background: #0b5ed7;
+
+	:root[data-theme="dark"] .card-handle code {
+		background: #0f172a;
+		color: #94a3b8;
+	}
+
+	.card-footer {
+		margin-top: auto;
+	}
+
+	.card-open-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0.65rem 1rem;
+		background: #f8fafc;
+		border: 1.5px solid #e2e8f0;
+		color: #0f172a;
+		border-radius: 8px;
+		font-size: 0.88rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition: all 0.15s ease;
+		box-sizing: border-box;
+	}
+
+	:root[data-theme="dark"] .card-open-btn {
+		background: #0f172a;
+		border-color: #334155;
+		color: #f1f5f9;
+	}
+
+	.card-open-btn:hover {
+		background: var(--form-accent, #2563eb);
+		border-color: var(--form-accent, #2563eb);
+		color: #ffffff;
+		text-decoration: none;
+		box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 	}
 </style>

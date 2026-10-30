@@ -1,9 +1,13 @@
 ---
+export const prerender = false;
+
+/**
+ * Individual Form Page: Dedicated page for each form (/forms/[handle]).
+ * Features active form card + Available Forms cards in footer.
+ */
 import { env } from "cloudflare:workers";
 import DemoShell from "../../layouts/DemoShell.astro";
 import { FreeformForm } from "@solspace/freeform-astro/components";
-
-export const prerender = false;
 
 const handle = Astro.params.handle;
 if (!handle || typeof handle !== "string") {
@@ -14,9 +18,12 @@ interface PublicForm {
 	id: string;
 	handle: string;
 	name: string;
+	fieldCount?: number;
+	cardColor?: string | null;
+	description?: string | null;
 }
 
-let formMeta: PublicForm | null = null;
+let forms: PublicForm[] = [];
 const fetcher = (env as any).SELF ?? globalThis;
 try {
 	const res = await fetcher.fetch(
@@ -24,11 +31,13 @@ try {
 	);
 	if (res.ok) {
 		const json = (await res.json()) as { data?: { forms?: PublicForm[] } };
-		formMeta = json.data?.forms?.find((f) => f.handle === handle) ?? null;
+		forms = json.data?.forms ?? [];
 	}
 } catch {
-	formMeta = null;
+	forms = [];
 }
+
+const formMeta = forms.find((f) => f.handle === handle) ?? null;
 
 if (!formMeta) {
 	return new Response(`Form "${handle}" not found.`, { status: 404 });
@@ -36,7 +45,18 @@ if (!formMeta) {
 
 const title = formMeta.name;
 const canonical = `${Astro.url.origin}/forms/${handle}`;
-const navSentence = `This section has automatically loaded the <b>${formMeta.name}</b> form.`;
+const currentColor = formMeta.cardColor || "#38bdf8";
+
+const formLinks = forms
+	.map(
+		(f) =>
+			`<a href="/forms/${encodeURIComponent(f.handle)}" class="${f.handle === handle ? "active" : ""}" role="menuitem"><span class="freeform-form-circle" style="background: ${f.cardColor || "#38bdf8"};"></span>${f.name}</a>`,
+	)
+	.join("");
+
+const navSentence = forms.length > 0
+	? `This section has automatically loaded the <div class="freeform-nav-dropdown" id="demo-form-dropdown"><button type="button" class="freeform-nav-button" aria-haspopup="true" aria-expanded="false"><span class="freeform-form-circle" style="background: ${currentColor};"></span>${formMeta.name}</button><div class="freeform-nav-dropdown-content" role="menu">${formLinks}</div></div> form.`
+	: `This section has automatically loaded the <b>${formMeta.name}</b> form.`;
 ---
 
 <DemoShell
@@ -45,13 +65,154 @@ const navSentence = `This section has automatically loaded the <b>${formMeta.nam
 	active="forms"
 	navSentence={navSentence}
 >
-	<div class="freeform-page-heading">
-		<h2>{formMeta.name}</h2>
-		<p>
-			Handle <code>{formMeta.handle}</code> ·{" "}
-			<a href="/forms">All forms</a>
-		</p>
-	</div>
+	<div class="freeform-single-form-container">
+		<!-- Back Navigation -->
+		<nav class="freeform-page-nav" aria-label="Breadcrumb">
+			<a href="/" class="freeform-back-btn">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="m15 18-6-6 6-6"/>
+				</svg>
+				<span>All Forms Showcase</span>
+			</a>
+		</nav>
 
-	<FreeformForm formId={formMeta.id} />
+		<!-- Page Heading with Live Form Badge on Right -->
+		<div class="freeform-page-heading">
+			<div class="heading-title-row">
+				<div>
+					<h2>{formMeta.name}</h2>
+					<p>
+						Handle <code>{formMeta.handle}</code> · Solspace Freeform live demo on EmDash
+					</p>
+				</div>
+				<span class="demo-live-badge">
+					<span class="live-dot"></span>
+					Live Form
+				</span>
+			</div>
+		</div>
+
+		<!-- Live Form Card -->
+		<div class="demo-form-wrapper">
+			<div class="demo-form-card">
+				<div class="demo-form-inner">
+					<FreeformForm formId={formMeta.id} />
+				</div>
+			</div>
+		</div>
+	</div>
 </DemoShell>
+
+<style>
+	.freeform-single-form-container {
+		max-width: 900px;
+		margin: 0 auto;
+		padding-bottom: 2rem;
+	}
+
+	.freeform-page-nav {
+		margin-bottom: 0.75rem;
+	}
+
+	.freeform-back-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.88rem;
+		font-weight: 500;
+		color: #2563eb;
+		text-decoration: none;
+		padding: 4px 8px 4px 4px;
+		border-radius: 6px;
+		transition: background-color 0.15s ease;
+	}
+
+	.freeform-back-btn:hover {
+		background: #eff6ff;
+		text-decoration: none;
+	}
+
+	:root[data-theme="dark"] .freeform-back-btn {
+		color: #60a5fa;
+	}
+
+	:root[data-theme="dark"] .freeform-back-btn:hover {
+		background: #1e3a8a30;
+	}
+
+	.freeform-page-heading {
+		margin-bottom: 1rem;
+		padding-bottom: 0;
+	}
+
+	.heading-title-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+
+	.freeform-page-heading h2 {
+		font-size: 1.85rem;
+		font-weight: 700;
+		color: #f8fafc;
+		margin: 0 0 0.25rem 0;
+	}
+
+	.freeform-page-heading p {
+		color: #94a3b8;
+		font-size: 0.95rem;
+		margin: 0;
+	}
+
+	.freeform-page-heading code {
+		font-size: 0.85rem;
+		background: #1e293b;
+		color: #38bdf8;
+		padding: 2px 8px;
+		border-radius: 4px;
+		border: 1px solid #334155;
+	}
+
+	.demo-live-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: #4ade80;
+		background: rgba(34, 197, 94, 0.12);
+		border: 1px solid rgba(74, 222, 128, 0.3);
+		padding: 5px 12px;
+		border-radius: 20px;
+		white-space: nowrap;
+	}
+
+	.live-dot {
+		width: 7px;
+		height: 7px;
+		background: #4ade80;
+		border-radius: 50%;
+		display: inline-block;
+		box-shadow: 0 0 8px #4ade80;
+	}
+
+	/* Form Card */
+	.demo-form-wrapper {
+		margin-bottom: 2rem;
+	}
+
+	.demo-form-card {
+		background: #1e293b;
+		border: 1.5px solid #334155;
+		border-radius: 14px;
+		box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.35);
+		overflow: hidden;
+	}
+
+	.demo-form-inner {
+		padding: 1.5rem 1.75rem;
+		max-width: 640px;
+	}
+</style>

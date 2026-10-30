@@ -1,50 +1,36 @@
-/* Demo color modes */
-:root {
-    --page-bg: #ffffff;
-    --page-text: #4e4e4e;
-    --nav-text: #8a8a8a;
-    --nav-bg: rgb(232,232,232,0.85);
-    --nav-highlight: #4e4e4e;
-    --nav-bg-hover: rgb(232,232,232,0.25);
-    --nav-button-bg: #d0d0d0;
-    --nav-button-text: #4e4e4e;
-    --nav-button-hover: #dfdfdf;
-    --nav-button-active: #eeeeee;
-    --nav-dropdown-bg: #f1f1f1;
-    --nav-dropdown-bg-hover: #dedede;
-    --nav-dropdown-text: #4e4e4e;
-    --nav-dropdown-divider: 1px solid #c5c5c5;
-}
-
+/* Demo color modes - EmDash Dark Theme by default */
+:root,
 :root[data-theme="dark"] {
-    --page-bg: #1f2226;
-    --page-text: #dfdfdf;
-    --nav-text: #959595;
-    --nav-bg: rgb(19,22,24,0.85);
-    --nav-highlight: #dfdfdf;
-    --nav-bg-hover: rgb(19,22,24,0.25);
-    --nav-button-bg: #3c474f;
-    --nav-button-text: #dfdfdf;
-    --nav-button-active: #dfdfdf;
-    --nav-dropdown-bg: #191c1f;
-    --nav-dropdown-bg-hover: #252b31;
-    --nav-dropdown-text: #dfdfdf;
-    --nav-dropdown-divider: 1px solid #252b31;
+    --page-bg: #0f172a;
+    --page-text: #f1f5f9;
+    --nav-text: #94a3b8;
+    --nav-bg: #0f172a;
+    --nav-highlight: #ffffff;
+    --nav-bg-hover: #1e293b;
+    --nav-button-bg: #1e293b;
+    --nav-button-text: #f8fafc;
+    --nav-button-hover: #2563eb;
+    --nav-button-active: #1d4ed8;
+    --nav-dropdown-bg: #0f172a;
+    --nav-dropdown-bg-hover: #1e293b;
+    --nav-dropdown-text: #f1f5f9;
+    --nav-dropdown-divider: 1px solid #1e293b;
 }
 
 /* Freeform Core Styles */
 html {
-    background: var(--page-bg);
+    background: #0f172a;
+    color: #f1f5f9;
     padding: 0 0 50px 0;
     margin: 0 auto;
 }
 body {
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 0;
     margin: 0 auto;
-    /* Match html so Bootstrap's --bs-body-bg (#212529) doesn't leave a
-       different-colored strip below the form (demo --page-bg is #1f2226). */
-    background: var(--page-bg);
+    background: radial-gradient(ellipse 70% 45% at 50% -15%, rgb(56 189 248 / 12%), transparent), #0f172a;
+    color: #f1f5f9;
+    min-height: 100vh;
 }
 html:has(body.freeform-spam-mode) {
     background: var(--page-bg);
@@ -76,7 +62,7 @@ h3.freeform-form-title {
 
 .freeform-page-heading {
     color: var(--page-text);
-    padding: 0 0 40px 0;
+    padding: 0 0 12px 0;
 }
 .freeform-page-heading h2 {
     font: 400 35px sans-serif;
@@ -180,22 +166,24 @@ h3.freeform-form-title {
 
 /* Demo navigation: visible sections, contextual selectors below */
 .freeform-nav {
-    --demo-nav-active: #2563d3;
+    --demo-nav-active: #3b82f6;
     position: sticky;
     top: 0;
     z-index: 1000;
     width: 100%;
     margin: 0;
-    padding: 11px 15px;
+    padding: 12px 18px;
     background: var(--nav-bg);
-    font: 400 12px sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    font: 400 13px sans-serif;
     color: var(--nav-text);
     text-align: center;
     box-sizing: border-box;
-    transition: all 0.5s;
+    transition: all 0.3s;
 }
-:root[data-theme="dark"] .freeform-nav { --demo-nav-active: #9bbcff; }
-.freeform-nav:has(.freeform-logo:hover) { background: var(--nav-bg-hover); }
+:root[data-theme="dark"] .freeform-nav { --demo-nav-active: #60a5fa; }
+.freeform-nav:has(.freeform-logo:hover) { background: var(--nav-bg); }
 .freeform-nav-main {
     position: relative;
     display: flex;
@@ -208,12 +196,31 @@ h3.freeform-form-title {
     padding: 0;
     box-sizing: border-box;
 }
-.freeform-nav-sentence { flex: 1 1 auto; min-width: 0; margin: 0; color: var(--nav-text); font: 400 12px/1.6 sans-serif; text-align: center; }
+.freeform-nav-sentence { flex: 1 1 auto; min-width: 0; margin: 0; color: var(--nav-text); font: 400 13px/1.6 sans-serif; text-align: center; }
+.freeform-nav-sentence b { color: #f8fafc; font-weight: 600; }
 .freeform-nav-sentence .freeform-nav-dropdown { vertical-align: middle; }
-.freeform-nav .freeform-logo { display: inline-flex; align-items: center; gap: 8px; flex: none; color: var(--nav-highlight); text-decoration: none; }
+.freeform-nav .freeform-logo { display: inline-flex; align-items: center; gap: 8px; flex: none; color: #ffffff; text-decoration: none; }
 .freeform-logo img { display: block; width: 25px; height: 25px; }
-.freeform-logo h1 { font: 600 16px/1.3 sans-serif !important; margin: 0 !important; padding: 0; white-space: nowrap; }
-.freeform-primary-links { display: flex; order: 3; margin-left: auto; align-self: stretch; align-items: stretch; gap: 20px; }
+.freeform-logo h1 { font: 600 16px/1.3 sans-serif !important; color: #ffffff !important; margin: 0 !important; padding: 0; white-space: nowrap; }
+.freeform-primary-links { display: flex; order: 3; margin-left: auto; align-self: center; align-items: center; gap: 12px; }
+.freeform-nav-docs-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0 !important;
+    font: 500 13px sans-serif !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition: all 0.15s ease;
+}
+.freeform-nav-docs-link:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff !important;
+}
 .freeform-primary-links a {
     display: flex;
     align-items: center;
@@ -252,22 +259,25 @@ h3.freeform-form-title {
 .freeform-nav-button {
     background: var(--nav-button-bg);
     color: var(--nav-button-text);
-    padding: 5px 8px;
-    margin: 0 3px;
-    font-size: 12px;
+    padding: 6px 12px;
+    margin: 0 4px;
+    font-size: 13px;
+    font-weight: 500;
     font-family: inherit;
     text-decoration: none;
-    border: none;
-    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 .freeform-nav-button:hover {
-    color: var(--nav-button-hover);
-    background: #0d6efd;
+    color: #ffffff;
+    background: #2563eb;
+    border-color: #2563eb;
 }
 .freeform-nav-button:focus-visible {
-    outline: 2px solid #0d6efd;
+    outline: 2px solid #3b82f6;
     outline-offset: 2px;
 }
 .freeform-nav-button .freeform-form-circle,
@@ -318,37 +328,37 @@ h3.freeform-form-title {
     text-align: left;
     display: none;
     position: absolute;
-    margin: 5px 0 0 3px;
-    padding: 0;
+    margin: 6px 0 0 0;
+    padding: 4px;
     color: var(--nav-dropdown-text);
     background: var(--nav-dropdown-bg);
-    border: none;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    min-width: 200px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    min-width: 220px;
     max-height: var(--freeform-dropdown-max-height);
     overflow-y: auto;
-    box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.4);
     z-index: 1000;
-    transition: all 0.25s;
+    transition: all 0.2s;
 }
 .freeform-nav-dropdown-content.extras-dropdown {
     min-width: 300px;
 }
 .freeform-nav-dropdown-content a {
     box-sizing: border-box;
-    font: 400 12px/1.4 sans-serif;
-    color: var(--nav-dropdown-text);
-    padding: 7px 8px;
-    margin: 0;
+    font: 500 13px/1.4 sans-serif;
+    color: #cbd5e1;
+    padding: 8px 10px;
+    margin: 2px 0;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
     overflow-wrap: anywhere;
-    transition: all 0.25s;
+    transition: background-color 0.15s, color 0.15s;
 }
 .freeform-nav-dropdown-content a.active {
-    color: #0d6efd;
+    color: #60a5fa;
     font-weight: 600;
 }
 .freeform-nav-dropdown-content .freeform-nav-template-option {
@@ -392,15 +402,14 @@ h3.freeform-form-title {
     outline: 2px solid #0d6efd;
     outline-offset: -2px;
 }
-/* Preserve hover/keyboard navigation when JavaScript is unavailable. */
-.freeform-nav-dropdown:not([data-enhanced]):hover .freeform-nav-dropdown-content,
-.freeform-nav-dropdown:not([data-enhanced]):focus-within .freeform-nav-dropdown-content {
-    display: block;
+/* Show dropdown menu strictly on click (when [data-open] is set) - no hover */
+.freeform-nav-dropdown[data-open] .freeform-nav-dropdown-content {
+    display: block !important;
 }
-.freeform-nav-dropdown[data-open] > .freeform-nav-button,
-.freeform-nav-dropdown:not([data-enhanced]):hover > .freeform-nav-button {
-    color: var(--nav-button-active);
-    background: #0d6efd;
+.freeform-nav-dropdown[data-open] > .freeform-nav-button {
+    color: #ffffff;
+    background: #2563eb;
+    border-color: #2563eb;
 }
 .freeform-nav-dropdown[data-open] > .freeform-nav-button::after {
     transform: translateY(1px) rotate(225deg);
@@ -1061,3 +1070,178 @@ body.freeform-spam-mode .freeform-submissions-tabs a[aria-current] { color: #8b6
 .freeform-form-card .freeform-browser-stats a:focus-visible { outline: 2px solid var(--browser-blue); outline-offset: 2px; }
 .freeform-form-card .freeform-browser-stats .freeform-browser-spam:hover { color: #8b601c; background: #fff8e9; }
 :root[data-theme="dark"] .freeform-form-card .freeform-browser-stats .freeform-browser-spam:hover { color: #e6c080; background: #392f1e; }
+
+
+/* ==========================================================================
+   Upgraded Freeform Form & Input Polish
+   ========================================================================== */
+[data-freeform-form] {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+[data-freeform-row] {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+[data-freeform-field] {
+    flex: 1;
+    min-width: 14rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+[data-freeform-field] label,
+[data-freeform-group-label] {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #334155;
+    letter-spacing: -0.01em;
+}
+
+:root[data-theme="dark"] [data-freeform-field] label,
+:root[data-theme="dark"] [data-freeform-group-label] {
+    color: #cbd5e1;
+}
+
+[data-freeform-required-mark] {
+    color: #ef4444;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* Upgraded Input Styling — Soft Slate Tint, Modern Focus Ring */
+[data-freeform-input] {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #0f172a;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-freeform-input]:hover:not(:disabled):not(:focus) {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+[data-freeform-input]:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+}
+
+:root[data-theme="dark"] [data-freeform-input] {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+:root[data-theme="dark"] [data-freeform-input]:hover:not(:disabled):not(:focus) {
+    background: #172033;
+    border-color: #475569;
+}
+
+:root[data-theme="dark"] [data-freeform-input]:focus {
+    background: #0f172a;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.25);
+}
+
+textarea[data-freeform-input] {
+    min-height: 6.5rem;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+[data-freeform-options] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.15rem;
+}
+
+[data-freeform-option] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    color: #334155;
+    cursor: pointer;
+}
+
+:root[data-theme="dark"] [data-freeform-option] {
+    color: #cbd5e1;
+}
+
+[data-freeform-option] input[type="checkbox"],
+[data-freeform-option] input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #2563eb;
+    cursor: pointer;
+}
+
+[data-freeform-privacy-notice] {
+    font-size: 12.5px;
+    color: #64748b;
+    line-height: 1.4;
+    margin: 0.25rem 0 0 0;
+}
+
+[data-freeform-submit] {
+    align-self: flex-start;
+    padding: 0.65rem 1.6rem;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+    transition: all 0.15s ease-in-out;
+}
+
+[data-freeform-submit]:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+[data-freeform-submit]:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+[data-freeform-submit]:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+[data-freeform-message] {
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+[data-freeform-message][data-freeform-state="success"] {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+[data-freeform-message][data-freeform-state="error"] {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

@@ -1,7 +1,7 @@
 {
 	"extends": "astro/tsconfigs/base",
 	"compilerOptions": {
-		"types": ["node"]
+		"types": ["node", "@cloudflare/workers-types/2023-07-01"]
 	},
 	"include": ["src", ".astro/types.d.ts", "emdash-env.d.ts"]
 }
