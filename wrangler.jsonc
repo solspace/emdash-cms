@@ -6,21 +6,18 @@
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
-	// Deploy on jahid's account via *.workers.dev first. Re-enable the
-	// emdash.solspace.net custom domain once solspace.net is on this CF account
-	// (or after Mitchell adds the zone / invites you with DNS rights).
 	"workers_dev": true,
-	// "routes": [
-	// 	{
-	// 		"pattern": "emdash.solspace.net",
-	// 		"custom_domain": true
-	// 	}
-	// ],
+	"routes": [
+		{
+			"pattern": "emdash.solspace.net",
+			"custom_domain": true
+		}
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "freeform-demo",
-			"database_id": "d4b9ca4b-b6c3-4166-9e3c-d84a129b63a0",
+			"database_id": "65cc710d-13bc-4e6a-bec8-5d03257b7fcf",
 		},
 	],
 	"r2_buckets": [
@@ -34,7 +31,7 @@
 	"kv_namespaces": [
 		{
 			"binding": "SESSION",
-			"id": "f26b7d589afb4631a0951c3d207519df",
+			"id": "47a44950593f49e3979559f2067ebbee",
 		},
 	],
 	// Worker Loader (LOADER) requires Cloudflare Workers Paid / Dynamic Workers.
