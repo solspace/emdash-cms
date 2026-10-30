@@ -70,6 +70,25 @@ export default defineConfig({
         },
       },
     },
+    {
+      name: "chunk-reload-recovery",
+      hooks: {
+        "astro:config:setup": ({ injectScript }) => {
+          injectScript(
+            "head-inline",
+            `(() => {
+  window.addEventListener('vite:preloadError', () => {
+    const last = Number(sessionStorage.getItem('emdash_chunk_reload') || 0);
+    if (Date.now() - last > 8000) {
+      sessionStorage.setItem('emdash_chunk_reload', String(Date.now()));
+      window.location.reload();
+    }
+  });
+})();`
+          );
+        },
+      },
+    },
   ],
   devToolbar: { enabled: false },
   vite: {
