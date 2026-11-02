@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "freeform-demo",
+	"account_id": "2e0ac5c0483744f63ea00a900a171586",
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": [
@@ -26,8 +27,6 @@
 			"bucket_name": "freeform-demo-media",
 		},
 	],
-	// Astro Cloudflare sessions — reuse namespace from first deploy
-	// (retry auto-provision fails: title already exists).
 	"kv_namespaces": [
 		{
 			"binding": "SESSION",
