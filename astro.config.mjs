@@ -42,6 +42,9 @@ export default defineConfig({
     emdash({
       database: d1({ binding: "DB", session: "auto" }),
       storage: r2({ binding: "MEDIA" }),
+      // Public origin for email links (recovery, invites, magic links), passkeys,
+      // CSRF, etc. Overrides the old emdash.marsroversupply.com value left in DB.
+      siteUrl: "https://emdash.solspace.net",
       // Enables LOADER sandbox only when wrangler.jsonc has worker_loaders
       // (Workers Paid). Free plans get a build warning and trusted plugins only.
       sandboxRunner: sandbox(),
