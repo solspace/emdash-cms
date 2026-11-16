@@ -112,9 +112,9 @@ import { FreeformChat } from "@solspace/freeform-astro/components";
 />
 ```
 
-### 4. Email (Cloudflare)
+### 4. Email (Cloudflare / SMTP)
 
-Production uses EmDash’s email pipeline via `cloudflareEmail()` and a Wrangler `send_email` binding (`EMAIL`). Freeform notifications, invites, and magic links all go through **Settings → Email**.
+This site targets **EmDash 1.5+**. Production uses EmDash’s email pipeline via `cloudflareEmail()` and a Wrangler `send_email` binding (`EMAIL`). EmDash 1.5 also ships a built-in **SMTP** provider under **Settings → Email**. Freeform’s **EmDash Host** transport and invites/magic links all go through that pipeline.
 
 1. Onboard a sender domain for [Cloudflare Email Sending](https://developers.cloudflare.com/email-service/) on the **same Cloudflare account** that owns this Worker (zone + Worker must match). Example:
 

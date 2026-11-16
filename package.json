@@ -46,17 +46,17 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@emdash-cms/cloudflare": "^1.4.0",
+    "@emdash-cms/cloudflare": "^1.5.0",
     "@local/freeform": "file:../freeform",
     "@solspace/freeform-astro": "file:../freeform/packages/astro",
     "astro": "^6.4.2",
-    "emdash": "^1.4.0",
+    "emdash": "^1.5.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
-    "@cloudflare/workers-types": "^4.20260305.1",
-    "wrangler": "^4.151.3"
+    "@cloudflare/workers-types": "^5.20261113.1",
+    "wrangler": "^4.162.0"
   }
 }

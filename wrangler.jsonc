@@ -53,4 +53,19 @@
 			"name": "EMAIL",
 		},
 	],
+	// EmDash 1.5 co-editing rooms (unused until `coEditing: true` in astro.config).
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "EMDASH_ROOMS",
+				"class_name": "EmDashRoom",
+			},
+		],
+	},
+	"exports": {
+		"EmDashRoom": {
+			"type": "durable-object",
+			"storage": "sqlite",
+		},
+	},
 }
