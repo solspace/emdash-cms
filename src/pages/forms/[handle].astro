@@ -6,6 +6,7 @@ export const prerender = false;
  * Features active form card + Available Forms cards in footer.
  */
 import { env } from "cloudflare:workers";
+import { fetchDemoForms, fetchPublicForm } from "../../lib/demo-forms";
 import DemoShell from "../../layouts/DemoShell.astro";
 import { FreeformForm } from "@solspace/freeform-astro/components";
 
@@ -14,30 +15,11 @@ if (!handle || typeof handle !== "string") {
 	return new Response("Missing form handle.", { status: 404 });
 }
 
-interface PublicForm {
-	id: string;
-	handle: string;
-	name: string;
-	fieldCount?: number;
-	cardColor?: string | null;
-	description?: string | null;
-}
-
-let forms: PublicForm[] = [];
 const fetcher = (env as any).SELF ?? globalThis;
-try {
-	const res = await fetcher.fetch(
-		`${Astro.url.origin}/_emdash/api/plugins/freeform/list-public-forms`,
-	);
-	if (res.ok) {
-		const json = (await res.json()) as { data?: { forms?: PublicForm[] } };
-		forms = json.data?.forms ?? [];
-	}
-} catch {
-	forms = [];
-}
-
-const formMeta = forms.find((f) => f.handle === handle) ?? null;
+const [formMeta, forms] = await Promise.all([
+	fetchPublicForm(Astro.url.origin, fetcher, handle),
+	fetchDemoForms(Astro.url.origin, fetcher),
+]);
 
 if (!formMeta) {
 	return new Response(`Form "${handle}" not found.`, { status: 404 });

@@ -6,30 +6,11 @@ export const prerender = false;
  * Each form opens on its own dedicated separate page (/forms/[handle]).
  */
 import { env } from "cloudflare:workers";
+import { fetchDemoForms } from "../lib/demo-forms";
 import DemoShell from "../layouts/DemoShell.astro";
 
-interface PublicForm {
-	id: string;
-	handle: string;
-	name: string;
-	fieldCount?: number;
-	cardColor?: string | null;
-	description?: string | null;
-}
-
-let forms: PublicForm[] = [];
 const fetcher = (env as any).SELF ?? globalThis;
-try {
-	const res = await fetcher.fetch(
-		`${Astro.url.origin}/_emdash/api/plugins/freeform/list-public-forms`,
-	);
-	if (res.ok) {
-		const json = (await res.json()) as { data?: { forms?: PublicForm[] } };
-		forms = json.data?.forms ?? [];
-	}
-} catch {
-	forms = [];
-}
+const forms = await fetchDemoForms(Astro.url.origin, fetcher);
 
 const formLinks = forms
 	.map(
