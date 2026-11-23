@@ -1,6 +1,6 @@
 {
   "name": "@solspace/emdash-cms",
-  "version": "1.4.3",
+  "version": "1.4.5",
   "private": true,
   "description": "Solspace example EmDash site with Freeform — forms, AI chat intake, and Cloudflare deploy.",
   "type": "module",
@@ -43,11 +43,13 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.6.0",
     "@astrojs/react": "^5.0.0",
+    "@cloudflare/kumo": "2.15.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@emdash-cms/cloudflare": "^1.5.0",
     "@local/freeform": "file:../freeform",
+    "@phosphor-icons/react": "2.1.10",
     "@solspace/freeform-astro": "file:../freeform/packages/astro",
     "astro": "^6.4.2",
     "emdash": "^1.5.0",

@@ -30,6 +30,46 @@ const REACT_OPTIMIZE = [
   "react/jsx-dev-runtime",
 ];
 
+/** Admin UI shared deps — must be CMS-resolvable + prebundled up front so the
+ *  first Freeform Forms visit does not trigger a mid-session optimizeDeps
+ *  reload (that reload loads a second React and crashes with useContext null). */
+const FREEFORM_ADMIN_OPTIMIZE = [
+  "@dnd-kit/core",
+  "@dnd-kit/sortable",
+  "@dnd-kit/utilities",
+  "@cloudflare/kumo",
+  "@phosphor-icons/react",
+];
+
+/**
+ * Force Freeform admin sources (loaded from ../freeform via @fs) to share the
+ * CMS React/Kumo copies instead of freeform/node_modules duplicates.
+ */
+function sharedAdminDeps() {
+  const force = [
+    "react",
+    "react-dom",
+    "react/jsx-runtime",
+    "react/jsx-dev-runtime",
+    "@cloudflare/kumo",
+    "@phosphor-icons/react",
+  ];
+  return {
+    name: "shared-admin-deps",
+    enforce: "pre",
+    async resolveId(id, _importer, opts) {
+      const hit = force.some(
+        (pkg) => id === pkg || id.startsWith(`${pkg}/`),
+      );
+      if (!hit) return null;
+      return this.resolve(id, path.join(CMS_ROOT, "package.json"), {
+        ...opts,
+        skipSelf: true,
+      });
+    },
+  };
+}
+
 export default defineConfig({
   output: "server",
   adapter: cloudflare(),
@@ -95,9 +135,14 @@ export default defineConfig({
   ],
   devToolbar: { enabled: false },
   vite: {
-    plugins: [emdashSsrDeps()],
+    plugins: [sharedAdminDeps(), emdashSsrDeps()],
     resolve: {
-      dedupe: ["react", "react-dom"],
+      dedupe: [
+        "react",
+        "react-dom",
+        "@cloudflare/kumo",
+        "@phosphor-icons/react",
+      ],
       alias: [
         // Prefer the live Freeform repo over the pnpm store copy so admin HMR
         // and native plugin entry track ../freeform without a manual sync.
@@ -117,7 +162,7 @@ export default defineConfig({
       ],
     },
     optimizeDeps: {
-      include: REACT_OPTIMIZE,
+      include: [...REACT_OPTIMIZE, ...FREEFORM_ADMIN_OPTIMIZE],
       exclude: [
         "@local/freeform",
         "@local/freeform/native",

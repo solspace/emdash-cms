@@ -64,7 +64,7 @@ npx @emdash-cms/plugin-cli info solspace.com freeform
 ### 2. Astro integration (already in this repo)
 
 ```bash
-pnpm add @solspace/freeform-astro@1.3.0
+pnpm add @solspace/freeform-astro@1.3.1
 ```
 
 ```js
@@ -105,12 +105,10 @@ Optional AI chat on the same form:
 import { FreeformChat } from "@solspace/freeform-astro/components";
 ---
 
-<FreeformChat
-  formHandle="contact"
-  siteName="Solspace Freeform"
-  salesContext="Short product/context blurb for the concierge…"
-/>
+<FreeformChat formHandle="contact" />
 ```
+
+Enable **AI chat** (and set sales context) on the form under Freeform → Protection.
 
 ### 4. Email (Cloudflare / SMTP)
 

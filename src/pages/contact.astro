@@ -19,11 +19,6 @@ const seo = page
 			ogImage: null,
 		};
 
-const salesContext = `Solspace Freeform for EmDash is a form builder plugin: create forms in the EmDash admin, embed them with @solspace/freeform-astro, collect submissions, send email notifications, and deliver signed webhooks.
-
-This page is a public demo. Visitors may ask about form builder features, AI generate, spam scoring, Turnstile, notifications, webhooks, CSV export, or privacy/retention tooling.
-
-Tone: helpful and direct. Gather enough detail for a Solspace teammate to follow up — don't invent product claims.`;
 ---
 
 <DemoShell
@@ -55,12 +50,9 @@ Tone: helpful and direct. Gather enough detail for a Solspace teammate to follow
 			<h3>AI chat</h3>
 			<p class="col-blurb">
 				FreeformChat collects answers conversationally and can submit the contact form.
+				Enable AI chat and set sales context under Freeform → Contact → Protection.
 			</p>
-			<FreeformChat
-				formHandle="contact"
-				siteName="Solspace Freeform"
-				salesContext={salesContext}
-			/>
+			<FreeformChat formHandle="contact" />
 		</section>
 
 		<section class="contact-col">
