@@ -1,6 +1,6 @@
 {
   "name": "@solspace/emdash-cms",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "private": true,
   "description": "Solspace example EmDash site with Freeform — forms, AI chat intake, and Cloudflare deploy.",
   "type": "module",
